@@ -8,28 +8,39 @@
     .scoreboard { margin-top: 50px; }
     .team { font-size: 2rem; margin: 20px; }
     .timer { font-size: 3rem; margin: 20px; }
+    input { font-size: 1rem; padding: 5px; margin: 5px; }
     button { font-size: 1.2rem; margin: 5px; padding: 10px 20px; }
   </style>
 </head>
 <body>
   <h1>농구 전광판</h1>
+  
   <div class="scoreboard">
     <div>
-      <span id="teamA">팀 A</span>: <span id="scoreA">0</span>
+      <span id="teamA" class="team">팀 A</span>: <span id="scoreA">0</span>
+      <br/>
+      <input type="text" id="inputTeamA" placeholder="팀 A 이름">
+      <button onclick="updateTeamName('A')">팀 A 이름 변경</button>
       <br/>
       <button onclick="changeScore('A', 1)">+1</button>
       <button onclick="changeScore('A', -1)">-1</button>
     </div>
+
     <div class="timer" id="timer">10:00</div>
     <button onclick="startTimer()">시작</button>
     <button onclick="stopTimer()">정지</button>
     <button onclick="resetTimer()">리셋</button>
+
     <div>
-      <span id="teamB">팀 B</span>: <span id="scoreB">0</span>
+      <span id="teamB" class="team">팀 B</span>: <span id="scoreB">0</span>
+      <br/>
+      <input type="text" id="inputTeamB" placeholder="팀 B 이름">
+      <button onclick="updateTeamName('B')">팀 B 이름 변경</button>
       <br/>
       <button onclick="changeScore('B', 1)">+1</button>
       <button onclick="changeScore('B', -1)">-1</button>
     </div>
+
     <div style="margin-top:30px;">
       <div>현재 쿼터: <span id="quarter">1</span></div>
       <button onclick="changeQuarter(1)">쿼터 +1</button>
@@ -89,8 +100,22 @@
 
     function resetTimer() {
       stopTimer();
-      seconds = 600; // 다시 10분
+      seconds = 600;
       updateTimerDisplay();
+    }
+
+    function updateTeamName(team) {
+      if (team === 'A') {
+        const newName = document.getElementById('inputTeamA').value.trim();
+        if (newName) {
+          document.getElementById('teamA').textContent = newName;
+        }
+      } else {
+        const newName = document.getElementById('inputTeamB').value.trim();
+        if (newName) {
+          document.getElementById('teamB').textContent = newName;
+        }
+      }
     }
 
     // 처음에 타이머 화면 갱신
