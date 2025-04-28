@@ -18,30 +18,21 @@
       background-color: #333;
     }
 
+    /* 전광판 스타일 (왼쪽 고정) */
     .display {
       position: fixed;
-      right: 0;
+      left: 0;
       top: 0;
-      width: 60%;
+      width: 70%;
       height: 100vh;
-      padding: 40px;
-      background: #222;
+      padding: 20px;
+      background: #000;
       color: #fff;
       text-align: center;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
       border-radius: 10px;
       overflow-y: auto; /* 전광판 스크롤 가능 */
-    }
-
-    .control {
-      width: 40%;
-      padding: 40px;
-      color: #fff;
-      background: #444;
-      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
-      border-radius: 10px;
-      overflow-y: auto; /* 조작 패널 스크롤 가능 */
-      height: 100vh;
+      font-size: 2rem;
     }
 
     .team-name {
@@ -51,15 +42,16 @@
     }
 
     .score {
-      font-size: 5rem;
-      margin: 10px 0;
+      font-size: 6rem;
+      margin: 20px 0;
       padding: 10px;
       background: #222;
       border-radius: 10px;
+      font-weight: bold;
     }
 
     .timer, .shotclock {
-      font-size: 3rem;
+      font-size: 4rem;
       margin: 20px 0;
       padding: 10px;
       background: #222;
@@ -69,6 +61,21 @@
     .quarter, .fouls {
       font-size: 2rem;
       margin: 20px 0;
+    }
+
+    /* 조작 패널 (오른쪽 고정) */
+    .control {
+      width: 30%;
+      padding: 40px;
+      color: #fff;
+      background: #444;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      overflow-y: auto; /* 조작 패널 스크롤 가능 */
+      height: 100vh;
+      position: fixed;
+      right: 0;
+      top: 0;
     }
 
     .control h3 {
@@ -98,6 +105,30 @@
       margin: 10px 0;
       font-size: 1rem;
       border-radius: 10px;
+    }
+    
+    /* 화면 크기에 따라 동적으로 조정 */
+    @media (max-width: 1200px) {
+      .display {
+        width: 60%;
+      }
+      .control {
+        width: 40%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .display {
+        width: 100%;
+        height: 60%;
+        position: relative;
+      }
+      .control {
+        width: 100%;
+        height: 40%;
+        position: relative;
+        top: 20px;
+      }
     }
   </style>
 </head>
@@ -148,13 +179,19 @@
   <h3>쉬는 시간</h3>
   <button onclick="startBreak()">쉬는 시간 시작</button>
   <button onclick="stopBreak()">쉬는 시간 정지</button>
+
+  <h3>공격 시간 제한</h3>
+  <button onclick="startShotClock()">공격 시간 시작</button>
+  <button onclick="stopShotClock()">공격 시간 정지</button>
+  <button onclick="resetShotClock()">공격 시간 초기화</button>
 </div>
 
 <script>
   let scoreA = 0, scoreB = 0;
   let timerRunning = false;
   let breakRunning = false;
-  let timerInterval;
+  let shotClockRunning = false;
+  let timerInterval, shotClockInterval;
 
   function updateTeamName(team) {
     const teamName = team === 'A' ? document.getElementById('inputTeamA').value : document.getElementById('inputTeamB').value;
@@ -217,6 +254,32 @@
   function stopBreak() {
     breakRunning = false;
     alert("쉬는 시간 종료!");
+  }
+
+  function startShotClock() {
+    if (!shotClockRunning) {
+      shotClockInterval = setInterval(function () {
+        let time = document.getElementById('shotclock').textContent;
+        let seconds = parseInt(time);
+
+        if (seconds === 0) {
+          clearInterval(shotClockInterval);
+        } else {
+          seconds--;
+        }
+        document.getElementById('shotclock').textContent = `${seconds}`;
+      }, 1000);
+      shotClockRunning = true;
+    }
+  }
+
+  function stopShotClock() {
+    clearInterval(shotClockInterval);
+    shotClockRunning = false;
+  }
+
+  function resetShotClock() {
+    document.getElementById('shotclock').textContent = "24";
   }
 </script>
 
