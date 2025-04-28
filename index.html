@@ -6,41 +6,33 @@
   <style>
     body {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       min-height: 100vh;
-      font-family: Arial, sans-serif;
       margin: 0;
       background-color: #333;
-      overflow-x: hidden; /* 수평 스크롤 방지 */
+      font-family: Arial, sans-serif;
     }
 
     .display {
-      flex: 2;
+      flex: 6; /* 전광판 영역: 화면의 60% */
       background: #222;
       color: #fff;
       padding: 40px;
       text-align: center;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
       border-radius: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      overflow: auto;
     }
 
     .control {
+      flex: 4; /* 조작 패널 영역: 화면의 40% */
       background: #444;
       padding: 40px;
       color: #fff;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
       border-radius: 10px;
-      position: fixed; /* 화면 상단에 고정 */
-      top: 50%; /* 화면 중앙에 배치 */
-      right: 10px; /* 우측에 고정 */
-      transform: translateY(-50%);
-      width: 300px;
-      z-index: 999;
-      max-height: 90%; /* 너무 길어지지 않게 */
-      overflow-y: auto; /* 세로 스크롤 가능 */
+      overflow: auto;
+      margin-left: 20px; /* 좌측 여백 */
     }
 
     .team-name {
