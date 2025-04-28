@@ -167,4 +167,49 @@
   }
 
   function stopShotClock() {
-    clearInterval
+    clearInterval(shotTimer);
+    shotTimer = null;
+  }
+
+  function resetShotClock() {
+    stopShotClock();
+    shotSeconds = 24;
+    updateDisplay();
+  }
+
+  function startBreakTimer() {
+    if (!breakTimerInterval) {
+      breakTimerInterval = setInterval(() => {
+        if (breakSeconds > 0) {
+          breakSeconds--;
+          updateDisplay();
+        } else {
+          stopBreakTimer();
+        }
+      }, 1000);
+    }
+  }
+
+  function stopBreakTimer() {
+    clearInterval(breakTimerInterval);
+    breakTimerInterval = null;
+  }
+
+  function resetBreakTimer() {
+    stopBreakTimer();
+    breakSeconds = 120;
+    updateDisplay();
+  }
+
+  function updateTeamName(team) {
+    const input = team === 'A' ? document.getElementById('inputTeamA') : document.getElementById('inputTeamB');
+    if (team === 'A') {
+      document.getElementById('teamAName').textContent = input.value || '팀 A';
+    } else {
+      document.getElementById('teamBName').textContent = input.value || '팀 B';
+    }
+  }
+</script>
+
+</body>
+</html>
