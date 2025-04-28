@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>농구 전광판</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; }
+    .scoreboard { margin-top: 50px; }
+    .team { font-size: 2rem; margin: 20px; }
+    .timer { font-size: 3rem; margin: 20px; }
+    button { font-size: 1.2rem; margin: 5px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h1>농구 전광판</h1>
+  <div class="scoreboard">
+    <div>
+      <span id="teamA">팀 A</span>: <span id="scoreA">0</span>
+      <br/>
+      <button onclick="changeScore('A', 1)">+1</button>
+      <button onclick="changeScore('A', -1)">-1</button>
+    </div>
+    <div class="timer" id="timer">10:00</div>
+    <button onclick="startTimer()">시작</button>
+    <button onclick="stopTimer()">정지</button>
+    <button onclick="resetTimer()">리셋</button>
+    <div>
+      <span id="teamB">팀 B</span>: <span id="scoreB">0</span>
+      <br/>
+      <button onclick="changeScore('B', 1)">+1</button>
+      <button onclick="changeScore('B', -1)">-1</button>
+    </div>
+    <div style="margin-top:30px;">
+      <div>현재 쿼터: <span id="quarter">1</span></div>
+      <button onclick="changeQuarter(1)">쿼터 +1</button>
+      <button onclick="changeQuarter(-1)">쿼터 -1</button>
+    </div>
+  </div>
+
+  <script>
+    let scoreA = 0;
+    let scoreB = 0;
+    let quarter = 1;
+    let timer;
+    let seconds = 600; // 10분
+
+    function updateTimerDisplay() {
+      const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const sec = String(seconds % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `${min}:${sec}`;
+    }
+
+    function changeScore(team, points) {
+      if (team === 'A') {
+        scoreA += points;
+        if (scoreA < 0) scoreA = 0;
+        document.getElementById('scoreA').textContent = scoreA;
+      } else {
+        scoreB += points;
+        if (scoreB < 0) scoreB = 0;
+        document.getElementById('scoreB').textContent = scoreB;
+      }
+    }
+
+    function changeQuarter(delta) {
+      quarter += delta;
+      if (quarter < 1) quarter = 1;
+      document.getElementById('quarter').textContent = quarter;
+    }
+
+    function startTimer() {
+      if (!timer) {
+        timer = setInterval(() => {
+          if (seconds > 0) {
+            seconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timer);
+            timer = null;
+          }
+        }, 1000);
+      }
+    }
+
+    function stopTimer() {
+      clearInterval(timer);
+      timer = null;
+    }
+
+    function resetTimer() {
+      stopTimer();
+      seconds = 600; // 다시 10분
+      updateTimerDisplay();
+    }
+
+    // 처음에 타이머 화면 갱신
+    updateTimerDisplay();
+  </script>
+</body>
+</html>
