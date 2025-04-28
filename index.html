@@ -4,17 +4,100 @@
   <meta charset="UTF-8">
   <title>농구 전광판</title>
   <style>
-    body { display: flex; flex-direction: column; min-height: 100vh; font-family: Arial, sans-serif; margin: 0; background-color: #333; }
-    .display { flex: 2; background: #222; color: #fff; padding: 40px; text-align: center; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7); border-radius: 10px; position: sticky; top: 0; z-index: 1000; }
-    .control { background: #444; padding: 40px; color: #fff; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7); border-radius: 10px; position: relative; }
-    .team-name { font-size: 3rem; font-weight: bold; margin: 20px 0; }
-    .score { font-size: 5rem; margin: 10px 0; padding: 10px; background: #222; border-radius: 10px; }
-    .timer, .shotclock { font-size: 3rem; margin: 20px 0; padding: 10px; background: #222; border-radius: 10px; }
-    .quarter, .fouls { font-size: 2rem; margin: 20px 0; }
-    .control h3 { font-size: 1.5rem; margin-bottom: 10px; }
-    .control button { width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; background: #555; color: #fff; border: none; cursor: pointer; border-radius: 10px; }
-    .control button:hover { background: #666; }
-    input { width: 100%; padding: 10px; margin: 10px 0; font-size: 1rem; border-radius: 10px; }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #333;
+      overflow-x: hidden; /* 수평 스크롤 방지 */
+    }
+
+    .display {
+      flex: 2;
+      background: #222;
+      color: #fff;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .control {
+      background: #444;
+      padding: 40px;
+      color: #fff;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      position: fixed; /* 화면 상단에 고정 */
+      top: 50%; /* 화면 중앙에 배치 */
+      right: 10px; /* 우측에 고정 */
+      transform: translateY(-50%);
+      width: 300px;
+      z-index: 999;
+      max-height: 90%; /* 너무 길어지지 않게 */
+      overflow-y: auto; /* 세로 스크롤 가능 */
+    }
+
+    .team-name {
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .score {
+      font-size: 5rem;
+      margin: 10px 0;
+      padding: 10px;
+      background: #222;
+      border-radius: 10px;
+    }
+
+    .timer, .shotclock {
+      font-size: 3rem;
+      margin: 20px 0;
+      padding: 10px;
+      background: #222;
+      border-radius: 10px;
+    }
+
+    .quarter, .fouls {
+      font-size: 2rem;
+      margin: 20px 0;
+    }
+
+    .control h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .control button {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 1.2rem;
+      background: #555;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .control button:hover {
+      background: #666;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1rem;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
