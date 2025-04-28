@@ -4,32 +4,44 @@
   <meta charset="UTF-8">
   <title>농구 전광판</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      display: grid;
-      grid-template-columns: 6fr 4fr; /* 6:4 비율로 나누기 */
-      min-height: 100vh;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      height: 100vh;
       margin: 0;
-      background-color: #333;
       font-family: Arial, sans-serif;
+      background-color: #333;
     }
 
     .display {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 60%;
+      height: 100vh;
+      padding: 40px;
       background: #222;
       color: #fff;
-      padding: 40px;
       text-align: center;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
       border-radius: 10px;
-      overflow: auto;
+      overflow-y: auto; /* 전광판 스크롤 가능 */
     }
 
     .control {
-      background: #444;
+      width: 40%;
       padding: 40px;
       color: #fff;
+      background: #444;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
       border-radius: 10px;
-      overflow: auto;
+      overflow-y: auto; /* 조작 패널 스크롤 가능 */
+      height: 100vh;
     }
 
     .team-name {
@@ -119,167 +131,92 @@
   <button onclick="updateTeamName('B')">팀 B 이름 변경</button>
 
   <h3>점수 조정</h3>
-  <button onclick="changeScore('A', 1)">팀 A +1</button>
-  <button onclick="changeScore('A', -1)">팀 A -1</button>
-  <button onclick="changeScore('A', 2)">팀 A +2</button>
-  <button onclick="changeScore('A', 3)">팀 A +3</button>
+  <button onclick="adjustScore('A', 1)">팀 A 점수 +1</button>
+  <button onclick="adjustScore('A', -1)">팀 A 점수 -1</button>
+  <button onclick="adjustScore('A', 3)">팀 A 점수 +3</button>
+  <button onclick="adjustScore('A', 2)">팀 A 점수 +2</button>
+  <button onclick="adjustScore('B', 1)">팀 B 점수 +1</button>
+  <button onclick="adjustScore('B', -1)">팀 B 점수 -1</button>
+  <button onclick="adjustScore('B', 3)">팀 B 점수 +3</button>
+  <button onclick="adjustScore('B', 2)">팀 B 점수 +2</button>
 
-  <button onclick="changeScore('B', 1)">팀 B +1</button>
-  <button onclick="changeScore('B', -1)">팀 B -1</button>
-  <button onclick="changeScore('B', 2)">팀 B +2</button>
-  <button onclick="changeScore('B', 3)">팀 B +3</button>
+  <h3>시간 조정</h3>
+  <button onclick="startTimer()">타이머 시작</button>
+  <button onclick="stopTimer()">타이머 정지</button>
+  <button onclick="resetTimer()">타이머 초기화</button>
 
-  <h3>파울 조정</h3>
-  <button onclick="changeFoul('A', 1)">팀 A 파울 +1</button>
-  <button onclick="changeFoul('A', -1)">팀 A 파울 -1</button>
-
-  <button onclick="changeFoul('B', 1)">팀 B 파울 +1</button>
-  <button onclick="changeFoul('B', -1)">팀 B 파울 -1</button>
-
-  <h3>쿼터 조정</h3>
-  <button onclick="changeQuarter(1)">쿼터 +1</button>
-  <button onclick="changeQuarter(-1)">쿼터 -1</button>
-
-  <h3>경기 타이머</h3>
-  <button onclick="startGameTimer()">시작</button>
-  <button onclick="stopGameTimer()">정지</button>
-  <button onclick="resetGameTimer()">리셋</button>
-
-  <h3>슛 클락 (24초)</h3>
-  <button onclick="startShotClock()">슛클락 시작</button>
-  <button onclick="stopShotClock()">슛클락 정지</button>
-  <button onclick="resetShotClock()">슛클락 리셋</button>
-
-  <h3>쉬는 시간 타이머</h3>
-  <button onclick="startBreakTimer()">쉬는 시간 시작</button>
-  <button onclick="stopBreakTimer()">쉬는 시간 정지</button>
-  <button onclick="resetBreakTimer()">쉬는 시간 리셋</button>
-  <div id="breakTimer" class="timer">02:00</div>
+  <h3>쉬는 시간</h3>
+  <button onclick="startBreak()">쉬는 시간 시작</button>
+  <button onclick="stopBreak()">쉬는 시간 정지</button>
 </div>
 
 <script>
   let scoreA = 0, scoreB = 0;
-  let foulsA = 0, foulsB = 0;
-  let quarter = 1;
-  let gameSeconds = 600;
-  let shotSeconds = 24;
-  let breakSeconds = 120;
-  let gameTimer, shotTimer, breakTimerInterval;
-
-  function updateDisplay() {
-    document.getElementById('scoreA').textContent = scoreA;
-    document.getElementById('scoreB').textContent = scoreB;
-    document.getElementById('quarter').textContent = `쿼터: ${quarter}`;
-    document.getElementById('foulsA').textContent = `팀 A 파울: ${foulsA}`;
-    document.getElementById('foulsB').textContent = `팀 B 파울: ${foulsB}`;
-
-    let min = String(Math.floor(gameSeconds / 60)).padStart(2, '0');
-    let sec = String(gameSeconds % 60).padStart(2, '0');
-    document.getElementById('timer').textContent = `${min}:${sec}`;
-
-    document.getElementById('shotclock').textContent = shotSeconds;
-
-    let breakMin = String(Math.floor(breakSeconds / 60)).padStart(2, '0');
-    let breakSec = String(breakSeconds % 60).padStart(2, '0');
-    document.getElementById('breakTimer').textContent = `${breakMin}:${breakSec}`;
-  }
-
-  function changeScore(team, delta) {
-    if (team === 'A') scoreA = Math.max(0, scoreA + delta);
-    else scoreB = Math.max(0, scoreB + delta);
-    updateDisplay();
-  }
-
-  function changeFoul(team, delta) {
-    if (team === 'A') foulsA = Math.max(0, foulsA + delta);
-    else foulsB = Math.max(0, foulsB + delta);
-    updateDisplay();
-  }
-
-  function changeQuarter(delta) {
-    quarter = Math.max(1, quarter + delta);
-    updateDisplay();
-  }
-
-  function startGameTimer() {
-    if (!gameTimer) {
-      gameTimer = setInterval(() => {
-        if (gameSeconds > 0) {
-          gameSeconds--;
-          updateDisplay();
-        } else {
-          stopGameTimer();
-        }
-      }, 1000);
-    }
-  }
-
-  function stopGameTimer() {
-    clearInterval(gameTimer);
-    gameTimer = null;
-  }
-
-  function resetGameTimer() {
-    stopGameTimer();
-    gameSeconds = 600;
-    updateDisplay();
-  }
-
-  function startShotClock() {
-    if (!shotTimer) {
-      shotTimer = setInterval(() => {
-        if (shotSeconds > 0) {
-          shotSeconds--;
-          updateDisplay();
-        } else {
-          resetShotClock();
-        }
-      }, 1000);
-    }
-  }
-
-  function stopShotClock() {
-    clearInterval(shotTimer);
-    shotTimer = null;
-  }
-
-  function resetShotClock() {
-    stopShotClock();
-    shotSeconds = 24;
-    updateDisplay();
-  }
-
-  function startBreakTimer() {
-    if (!breakTimerInterval) {
-      breakTimerInterval = setInterval(() => {
-        if (breakSeconds > 0) {
-          breakSeconds--;
-          updateDisplay();
-        } else {
-          stopBreakTimer();
-        }
-      }, 1000);
-    }
-  }
-
-  function stopBreakTimer() {
-    clearInterval(breakTimerInterval);
-    breakTimerInterval = null;
-  }
-
-  function resetBreakTimer() {
-    stopBreakTimer();
-    breakSeconds = 120;
-    updateDisplay();
-  }
+  let timerRunning = false;
+  let breakRunning = false;
+  let timerInterval;
 
   function updateTeamName(team) {
-    const input = team === 'A' ? document.getElementById('inputTeamA') : document.getElementById('inputTeamB');
+    const teamName = team === 'A' ? document.getElementById('inputTeamA').value : document.getElementById('inputTeamB').value;
     if (team === 'A') {
-      document.getElementById('teamAName').textContent = input.value || '팀 A';
+      document.getElementById('teamAName').textContent = teamName;
     } else {
-      document.getElementById('teamBName').textContent = input.value || '팀 B';
+      document.getElementById('teamBName').textContent = teamName;
     }
+  }
+
+  function adjustScore(team, points) {
+    if (team === 'A') {
+      scoreA += points;
+      document.getElementById('scoreA').textContent = scoreA;
+    } else {
+      scoreB += points;
+      document.getElementById('scoreB').textContent = scoreB;
+    }
+  }
+
+  function startTimer() {
+    if (!timerRunning) {
+      timerInterval = setInterval(function () {
+        let time = document.getElementById('timer').textContent;
+        let minutes = parseInt(time.split(':')[0]);
+        let seconds = parseInt(time.split(':')[1]);
+
+        if (seconds === 0) {
+          if (minutes === 0) {
+            clearInterval(timerInterval);
+            return;
+          }
+          minutes--;
+          seconds = 59;
+        } else {
+          seconds--;
+        }
+        document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+      }, 1000);
+      timerRunning = true;
+    }
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+  }
+
+  function resetTimer() {
+    document.getElementById('timer').textContent = "10:00";
+  }
+
+  function startBreak() {
+    if (!breakRunning) {
+      breakRunning = true;
+      alert("쉬는 시간 시작!");
+    }
+  }
+
+  function stopBreak() {
+    breakRunning = false;
+    alert("쉬는 시간 종료!");
   }
 </script>
 
