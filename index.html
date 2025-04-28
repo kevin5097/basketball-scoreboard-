@@ -4,15 +4,17 @@
   <meta charset="UTF-8">
   <title>농구 전광판</title>
   <style>
-    body { display: flex; min-height: 100vh; font-family: Arial, sans-serif; margin: 0; }
-    .display { flex: 2; background: #222; color: #fff; padding: 30px; text-align: center; }
-    .control { flex: 1; background: #eee; padding: 30px; overflow-y: auto; }
-    .team-name { font-size: 2.5rem; margin: 20px 0; }
-    .score { font-size: 4rem; margin: 10px 0; }
-    .timer, .shotclock { font-size: 3rem; margin: 20px 0; }
+    body { display: flex; flex-direction: column; min-height: 100vh; font-family: Arial, sans-serif; margin: 0; background-color: #333; }
+    .display { flex: 2; background: #222; color: #fff; padding: 40px; text-align: center; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7); border-radius: 10px; position: sticky; top: 0; z-index: 1000; }
+    .control { background: #444; padding: 40px; color: #fff; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7); border-radius: 10px; position: relative; }
+    .team-name { font-size: 3rem; font-weight: bold; margin: 20px 0; }
+    .score { font-size: 5rem; margin: 10px 0; padding: 10px; background: #222; border-radius: 10px; }
+    .timer, .shotclock { font-size: 3rem; margin: 20px 0; padding: 10px; background: #222; border-radius: 10px; }
     .quarter, .fouls { font-size: 2rem; margin: 20px 0; }
-    input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 1rem; }
-    button { cursor: pointer; }
+    .control h3 { font-size: 1.5rem; margin-bottom: 10px; }
+    .control button { width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; background: #555; color: #fff; border: none; cursor: pointer; border-radius: 10px; }
+    .control button:hover { background: #666; }
+    input { width: 100%; padding: 10px; margin: 10px 0; font-size: 1rem; border-radius: 10px; }
   </style>
 </head>
 <body>
@@ -35,7 +37,7 @@
 </div>
 
 <div class="control">
-  <h2>조작 패널</h2>
+  <h3>조작 패널</h3>
 
   <h3>팀 이름 변경</h3>
   <input type="text" id="inputTeamA" placeholder="팀 A 이름">
@@ -47,9 +49,13 @@
   <h3>점수 조정</h3>
   <button onclick="changeScore('A', 1)">팀 A +1</button>
   <button onclick="changeScore('A', -1)">팀 A -1</button>
+  <button onclick="changeScore('A', 2)">팀 A +2</button>
+  <button onclick="changeScore('A', 3)">팀 A +3</button>
 
   <button onclick="changeScore('B', 1)">팀 B +1</button>
   <button onclick="changeScore('B', -1)">팀 B -1</button>
+  <button onclick="changeScore('B', 2)">팀 B +2</button>
+  <button onclick="changeScore('B', 3)">팀 B +3</button>
 
   <h3>파울 조정</h3>
   <button onclick="changeFoul('A', 1)">팀 A 파울 +1</button>
@@ -71,6 +77,12 @@
   <button onclick="startShotClock()">슛클락 시작</button>
   <button onclick="stopShotClock()">슛클락 정지</button>
   <button onclick="resetShotClock()">슛클락 리셋</button>
+
+  <h3>쉬는 시간 타이머</h3>
+  <button onclick="startBreakTimer()">쉬는 시간 시작</button>
+  <button onclick="stopBreakTimer()">쉬는 시간 정지</button>
+  <button onclick="resetBreakTimer()">쉬는 시간 리셋</button>
+  <div id="breakTimer" class="timer">02:00</div>
 </div>
 
 <script>
@@ -79,7 +91,8 @@
   let quarter = 1;
   let gameSeconds = 600;
   let shotSeconds = 24;
-  let gameTimer, shotTimer;
+  let breakSeconds = 120;
+  let gameTimer, shotTimer, breakTimerInterval;
 
   function updateDisplay() {
     document.getElementById('scoreA').textContent = scoreA;
@@ -93,6 +106,10 @@
     document.getElementById('timer').textContent = `${min}:${sec}`;
 
     document.getElementById('shotclock').textContent = shotSeconds;
+
+    let breakMin = String(Math.floor(breakSeconds / 60)).padStart(2, '0');
+    let breakSec = String(breakSeconds % 60).padStart(2, '0');
+    document.getElementById('breakTimer').textContent = `${breakMin}:${breakSec}`;
   }
 
   function changeScore(team, delta) {
@@ -150,28 +167,4 @@
   }
 
   function stopShotClock() {
-    clearInterval(shotTimer);
-    shotTimer = null;
-  }
-
-  function resetShotClock() {
-    stopShotClock();
-    shotSeconds = 24;
-    updateDisplay();
-  }
-
-  function updateTeamName(team) {
-    if (team === 'A') {
-      const name = document.getElementById('inputTeamA').value.trim();
-      if (name) document.getElementById('teamAName').textContent = name;
-    } else {
-      const name = document.getElementById('inputTeamB').value.trim();
-      if (name) document.getElementById('teamBName').textContent = name;
-    }
-  }
-
-  updateDisplay();
-</script>
-
-</body>
-</html>
+    clearInterval
