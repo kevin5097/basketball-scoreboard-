@@ -4,122 +4,174 @@
   <meta charset="UTF-8">
   <title>농구 전광판</title>
   <style>
-    body { text-align: center; font-family: Arial, sans-serif; }
-    .scoreboard { margin-top: 50px; }
-    .team { font-size: 2rem; margin: 20px; }
-    .timer { font-size: 3rem; margin: 20px; }
-    input { font-size: 1rem; padding: 5px; margin: 5px; }
-    button { font-size: 1.2rem; margin: 5px; padding: 10px 20px; }
+    body { display: flex; min-height: 100vh; font-family: Arial, sans-serif; margin: 0; }
+    .display { flex: 2; background: #222; color: #fff; padding: 30px; text-align: center; }
+    .control { flex: 1; background: #eee; padding: 30px; overflow-y: auto; }
+    .team-name { font-size: 2.5rem; margin: 20px 0; }
+    .score { font-size: 4rem; margin: 10px 0; }
+    .timer, .shotclock { font-size: 3rem; margin: 20px 0; }
+    .quarter, .fouls { font-size: 2rem; margin: 20px 0; }
+    input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 1rem; }
+    button { cursor: pointer; }
   </style>
 </head>
 <body>
-  <h1>농구 전광판</h1>
-  
-  <div class="scoreboard">
-    <div>
-      <span id="teamA" class="team">팀 A</span>: <span id="scoreA">0</span>
-      <br/>
-      <input type="text" id="inputTeamA" placeholder="팀 A 이름">
-      <button onclick="updateTeamName('A')">팀 A 이름 변경</button>
-      <br/>
-      <button onclick="changeScore('A', 1)">+1</button>
-      <button onclick="changeScore('A', -1)">-1</button>
-    </div>
 
-    <div class="timer" id="timer">10:00</div>
-    <button onclick="startTimer()">시작</button>
-    <button onclick="stopTimer()">정지</button>
-    <button onclick="resetTimer()">리셋</button>
+<div class="display">
+  <div id="teamAName" class="team-name">팀 A</div>
+  <div id="scoreA" class="score">0</div>
 
-    <div>
-      <span id="teamB" class="team">팀 B</span>: <span id="scoreB">0</span>
-      <br/>
-      <input type="text" id="inputTeamB" placeholder="팀 B 이름">
-      <button onclick="updateTeamName('B')">팀 B 이름 변경</button>
-      <br/>
-      <button onclick="changeScore('B', 1)">+1</button>
-      <button onclick="changeScore('B', -1)">-1</button>
-    </div>
+  <div id="teamBName" class="team-name">팀 B</div>
+  <div id="scoreB" class="score">0</div>
 
-    <div style="margin-top:30px;">
-      <div>현재 쿼터: <span id="quarter">1</span></div>
-      <button onclick="changeQuarter(1)">쿼터 +1</button>
-      <button onclick="changeQuarter(-1)">쿼터 -1</button>
-    </div>
+  <div id="timer" class="timer">10:00</div>
+  <div id="shotclock" class="shotclock">24</div>
+
+  <div id="quarter" class="quarter">쿼터: 1</div>
+  <div>
+    <div id="foulsA" class="fouls">팀 A 파울: 0</div>
+    <div id="foulsB" class="fouls">팀 B 파울: 0</div>
   </div>
+</div>
 
-  <script>
-    let scoreA = 0;
-    let scoreB = 0;
-    let quarter = 1;
-    let timer;
-    let seconds = 600; // 10분
+<div class="control">
+  <h2>조작 패널</h2>
 
-    function updateTimerDisplay() {
-      const min = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const sec = String(seconds % 60).padStart(2, '0');
-      document.getElementById('timer').textContent = `${min}:${sec}`;
-    }
+  <h3>팀 이름 변경</h3>
+  <input type="text" id="inputTeamA" placeholder="팀 A 이름">
+  <button onclick="updateTeamName('A')">팀 A 이름 변경</button>
 
-    function changeScore(team, points) {
-      if (team === 'A') {
-        scoreA += points;
-        if (scoreA < 0) scoreA = 0;
-        document.getElementById('scoreA').textContent = scoreA;
-      } else {
-        scoreB += points;
-        if (scoreB < 0) scoreB = 0;
-        document.getElementById('scoreB').textContent = scoreB;
-      }
-    }
+  <input type="text" id="inputTeamB" placeholder="팀 B 이름">
+  <button onclick="updateTeamName('B')">팀 B 이름 변경</button>
 
-    function changeQuarter(delta) {
-      quarter += delta;
-      if (quarter < 1) quarter = 1;
-      document.getElementById('quarter').textContent = quarter;
-    }
+  <h3>점수 조정</h3>
+  <button onclick="changeScore('A', 1)">팀 A +1</button>
+  <button onclick="changeScore('A', -1)">팀 A -1</button>
 
-    function startTimer() {
-      if (!timer) {
-        timer = setInterval(() => {
-          if (seconds > 0) {
-            seconds--;
-            updateTimerDisplay();
-          } else {
-            clearInterval(timer);
-            timer = null;
-          }
-        }, 1000);
-      }
-    }
+  <button onclick="changeScore('B', 1)">팀 B +1</button>
+  <button onclick="changeScore('B', -1)">팀 B -1</button>
 
-    function stopTimer() {
-      clearInterval(timer);
-      timer = null;
-    }
+  <h3>파울 조정</h3>
+  <button onclick="changeFoul('A', 1)">팀 A 파울 +1</button>
+  <button onclick="changeFoul('A', -1)">팀 A 파울 -1</button>
 
-    function resetTimer() {
-      stopTimer();
-      seconds = 600;
-      updateTimerDisplay();
-    }
+  <button onclick="changeFoul('B', 1)">팀 B 파울 +1</button>
+  <button onclick="changeFoul('B', -1)">팀 B 파울 -1</button>
 
-    function updateTeamName(team) {
-      if (team === 'A') {
-        const newName = document.getElementById('inputTeamA').value.trim();
-        if (newName) {
-          document.getElementById('teamA').textContent = newName;
+  <h3>쿼터 조정</h3>
+  <button onclick="changeQuarter(1)">쿼터 +1</button>
+  <button onclick="changeQuarter(-1)">쿼터 -1</button>
+
+  <h3>경기 타이머</h3>
+  <button onclick="startGameTimer()">시작</button>
+  <button onclick="stopGameTimer()">정지</button>
+  <button onclick="resetGameTimer()">리셋</button>
+
+  <h3>슛 클락 (24초)</h3>
+  <button onclick="startShotClock()">슛클락 시작</button>
+  <button onclick="stopShotClock()">슛클락 정지</button>
+  <button onclick="resetShotClock()">슛클락 리셋</button>
+</div>
+
+<script>
+  let scoreA = 0, scoreB = 0;
+  let foulsA = 0, foulsB = 0;
+  let quarter = 1;
+  let gameSeconds = 600;
+  let shotSeconds = 24;
+  let gameTimer, shotTimer;
+
+  function updateDisplay() {
+    document.getElementById('scoreA').textContent = scoreA;
+    document.getElementById('scoreB').textContent = scoreB;
+    document.getElementById('quarter').textContent = `쿼터: ${quarter}`;
+    document.getElementById('foulsA').textContent = `팀 A 파울: ${foulsA}`;
+    document.getElementById('foulsB').textContent = `팀 B 파울: ${foulsB}`;
+
+    let min = String(Math.floor(gameSeconds / 60)).padStart(2, '0');
+    let sec = String(gameSeconds % 60).padStart(2, '0');
+    document.getElementById('timer').textContent = `${min}:${sec}`;
+
+    document.getElementById('shotclock').textContent = shotSeconds;
+  }
+
+  function changeScore(team, delta) {
+    if (team === 'A') scoreA = Math.max(0, scoreA + delta);
+    else scoreB = Math.max(0, scoreB + delta);
+    updateDisplay();
+  }
+
+  function changeFoul(team, delta) {
+    if (team === 'A') foulsA = Math.max(0, foulsA + delta);
+    else foulsB = Math.max(0, foulsB + delta);
+    updateDisplay();
+  }
+
+  function changeQuarter(delta) {
+    quarter = Math.max(1, quarter + delta);
+    updateDisplay();
+  }
+
+  function startGameTimer() {
+    if (!gameTimer) {
+      gameTimer = setInterval(() => {
+        if (gameSeconds > 0) {
+          gameSeconds--;
+          updateDisplay();
+        } else {
+          stopGameTimer();
         }
-      } else {
-        const newName = document.getElementById('inputTeamB').value.trim();
-        if (newName) {
-          document.getElementById('teamB').textContent = newName;
-        }
-      }
+      }, 1000);
     }
+  }
 
-    // 처음에 타이머 화면 갱신
-    updateTimerDisplay();
-  </script>
+  function stopGameTimer() {
+    clearInterval(gameTimer);
+    gameTimer = null;
+  }
+
+  function resetGameTimer() {
+    stopGameTimer();
+    gameSeconds = 600;
+    updateDisplay();
+  }
+
+  function startShotClock() {
+    if (!shotTimer) {
+      shotTimer = setInterval(() => {
+        if (shotSeconds > 0) {
+          shotSeconds--;
+          updateDisplay();
+        } else {
+          resetShotClock();
+        }
+      }, 1000);
+    }
+  }
+
+  function stopShotClock() {
+    clearInterval(shotTimer);
+    shotTimer = null;
+  }
+
+  function resetShotClock() {
+    stopShotClock();
+    shotSeconds = 24;
+    updateDisplay();
+  }
+
+  function updateTeamName(team) {
+    if (team === 'A') {
+      const name = document.getElementById('inputTeamA').value.trim();
+      if (name) document.getElementById('teamAName').textContent = name;
+    } else {
+      const name = document.getElementById('inputTeamB').value.trim();
+      if (name) document.getElementById('teamBName').textContent = name;
+    }
+  }
+
+  updateDisplay();
+</script>
+
 </body>
 </html>
