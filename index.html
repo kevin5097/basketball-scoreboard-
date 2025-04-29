@@ -2,286 +2,78 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>농구 전광판</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #333;
-    }
-
-    /* 전광판 스타일 (왼쪽 고정) */
-    .display {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 70%;
-      height: 100vh;
-      padding: 20px;
-      background: #000;
-      color: #fff;
-      text-align: center;
-      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
-      border-radius: 10px;
-      overflow-y: auto; /* 전광판 스크롤 가능 */
-      font-size: 2rem;
-    }
-
-    .team-name {
-      font-size: 3rem;
-      font-weight: bold;
-      margin: 20px 0;
-    }
-
-    .score {
-      font-size: 6rem;
-      margin: 20px 0;
-      padding: 10px;
-      background: #222;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-
-    .timer, .shotclock {
-      font-size: 4rem;
-      margin: 20px 0;
-      padding: 10px;
-      background: #222;
-      border-radius: 10px;
-    }
-
-    .quarter, .fouls {
-      font-size: 2rem;
-      margin: 20px 0;
-    }
-
-    /* 조작 패널 (오른쪽 고정) */
-    .control {
-      width: 30%;
-      padding: 40px;
-      color: #fff;
-      background: #444;
-      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
-      border-radius: 10px;
-      overflow-y: auto; /* 조작 패널 스크롤 가능 */
-      height: 100vh;
-      position: fixed;
-      right: 0;
-      top: 0;
-    }
-
-    .control h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    .control button {
-      width: 100%;
-      padding: 15px;
-      margin: 10px 0;
-      font-size: 1.2rem;
-      background: #555;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 10px;
-    }
-
-    .control button:hover {
-      background: #666;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 1rem;
-      border-radius: 10px;
-    }
-    
-    /* 화면 크기에 따라 동적으로 조정 */
-    @media (max-width: 1200px) {
-      .display {
-        width: 60%;
-      }
-      .control {
-        width: 40%;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .display {
-        width: 100%;
-        height: 60%;
-        position: relative;
-      }
-      .control {
-        width: 100%;
-        height: 40%;
-        position: relative;
-        top: 20px;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="container">
+    <div class="scoreboard">
+      <div class="team" id="teamA">
+        <h2 id="teamAName">TEAM A</h2>
+        <div class="score" id="scoreA">0</div>
+        <div class="fouls" id="foulsA">Fouls: 0</div>
+      </div>
 
-<div class="display">
-  <div id="teamAName" class="team-name">팀 A</div>
-  <div id="scoreA" class="score">0</div>
+      <div class="timer" id="gameTimer">10:00</div>
 
-  <div id="teamBName" class="team-name">팀 B</div>
-  <div id="scoreB" class="score">0</div>
+      <div class="team" id="teamB">
+        <h2 id="teamBName">TEAM B</h2>
+        <div class="score" id="scoreB">0</div>
+        <div class="fouls" id="foulsB">Fouls: 0</div>
+      </div>
 
-  <div id="timer" class="timer">10:00</div>
-  <div id="shotclock" class="shotclock">24</div>
+      <div class="quarter" id="quarter">Q1</div>
+      <div class="shot-clock" id="shotClock">24</div>
+    </div>
 
-  <div id="quarter" class="quarter">쿼터: 1</div>
-  <div>
-    <div id="foulsA" class="fouls">팀 A 파울: 0</div>
-    <div id="foulsB" class="fouls">팀 B 파울: 0</div>
+    <div class="control-panel">
+      <h3>조작 패널</h3>
+      <div class="team-name-controls">
+        <input type="text" id="teamAInput" placeholder="팀 A 이름 변경" />
+        <button onclick="changeTeamName('A')">변경</button>
+        <input type="text" id="teamBInput" placeholder="팀 B 이름 변경" />
+        <button onclick="changeTeamName('B')">변경</button>
+      </div>
+
+      <div class="score-controls">
+        <h4>점수 조정</h4>
+        <button onclick="updateScore('A', 1)">A +1</button>
+        <button onclick="updateScore('A', 2)">A +2</button>
+        <button onclick="updateScore('A', 3)">A +3</button>
+        <button onclick="updateScore('A', -1)">A -1</button>
+        <button onclick="updateScore('B', 1)">B +1</button>
+        <button onclick="updateScore('B', 2)">B +2</button>
+        <button onclick="updateScore('B', 3)">B +3</button>
+        <button onclick="updateScore('B', -1)">B -1</button>
+      </div>
+
+      <div class="foul-controls">
+        <h4>파울 조정</h4>
+        <button onclick="updateFouls('A', 1)">A 파울 +1</button>
+        <button onclick="updateFouls('B', 1)">B 파울 +1</button>
+      </div>
+
+      <div class="quarter-controls">
+        <h4>쿼터 조정</h4>
+        <button onclick="changeQuarter(1)">다음 쿼터</button>
+      </div>
+
+      <div class="timer-controls">
+        <h4>경기 타이머</h4>
+        <button onclick="startTimer()">시작</button>
+        <button onclick="pauseTimer()">일시정지</button>
+        <button onclick="resetTimer()">리셋</button>
+      </div>
+
+      <div class="shot-clock-controls">
+        <h4>슛 클락</h4>
+        <button onclick="resetShotClock()">24초 리셋</button>
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="control">
-  <h3>조작 패널</h3>
-
-  <h3>팀 이름 변경</h3>
-  <input type="text" id="inputTeamA" placeholder="팀 A 이름">
-  <button onclick="updateTeamName('A')">팀 A 이름 변경</button>
-
-  <input type="text" id="inputTeamB" placeholder="팀 B 이름">
-  <button onclick="updateTeamName('B')">팀 B 이름 변경</button>
-
-  <h3>점수 조정</h3>
-  <button onclick="adjustScore('A', 1)">팀 A 점수 +1</button>
-  <button onclick="adjustScore('A', -1)">팀 A 점수 -1</button>
-  <button onclick="adjustScore('A', 3)">팀 A 점수 +3</button>
-  <button onclick="adjustScore('A', 2)">팀 A 점수 +2</button>
-  <button onclick="adjustScore('B', 1)">팀 B 점수 +1</button>
-  <button onclick="adjustScore('B', -1)">팀 B 점수 -1</button>
-  <button onclick="adjustScore('B', 3)">팀 B 점수 +3</button>
-  <button onclick="adjustScore('B', 2)">팀 B 점수 +2</button>
-
-  <h3>시간 조정</h3>
-  <button onclick="startTimer()">타이머 시작</button>
-  <button onclick="stopTimer()">타이머 정지</button>
-  <button onclick="resetTimer()">타이머 초기화</button>
-
-  <h3>쉬는 시간</h3>
-  <button onclick="startBreak()">쉬는 시간 시작</button>
-  <button onclick="stopBreak()">쉬는 시간 정지</button>
-
-  <h3>공격 시간 제한</h3>
-  <button onclick="startShotClock()">공격 시간 시작</button>
-  <button onclick="stopShotClock()">공격 시간 정지</button>
-  <button onclick="resetShotClock()">공격 시간 초기화</button>
-</div>
-
-<script>
-  let scoreA = 0, scoreB = 0;
-  let timerRunning = false;
-  let breakRunning = false;
-  let shotClockRunning = false;
-  let timerInterval, shotClockInterval;
-
-  function updateTeamName(team) {
-    const teamName = team === 'A' ? document.getElementById('inputTeamA').value : document.getElementById('inputTeamB').value;
-    if (team === 'A') {
-      document.getElementById('teamAName').textContent = teamName;
-    } else {
-      document.getElementById('teamBName').textContent = teamName;
-    }
-  }
-
-  function adjustScore(team, points) {
-    if (team === 'A') {
-      scoreA += points;
-      document.getElementById('scoreA').textContent = scoreA;
-    } else {
-      scoreB += points;
-      document.getElementById('scoreB').textContent = scoreB;
-    }
-  }
-
-  function startTimer() {
-    if (!timerRunning) {
-      timerInterval = setInterval(function () {
-        let time = document.getElementById('timer').textContent;
-        let minutes = parseInt(time.split(':')[0]);
-        let seconds = parseInt(time.split(':')[1]);
-
-        if (seconds === 0) {
-          if (minutes === 0) {
-            clearInterval(timerInterval);
-            return;
-          }
-          minutes--;
-          seconds = 59;
-        } else {
-          seconds--;
-        }
-        document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-      }, 1000);
-      timerRunning = true;
-    }
-  }
-
-  function stopTimer() {
-    clearInterval(timerInterval);
-    timerRunning = false;
-  }
-
-  function resetTimer() {
-    document.getElementById('timer').textContent = "10:00";
-  }
-
-  function startBreak() {
-    if (!breakRunning) {
-      breakRunning = true;
-      alert("쉬는 시간 시작!");
-    }
-  }
-
-  function stopBreak() {
-    breakRunning = false;
-    alert("쉬는 시간 종료!");
-  }
-
-  function startShotClock() {
-    if (!shotClockRunning) {
-      shotClockInterval = setInterval(function () {
-        let time = document.getElementById('shotclock').textContent;
-        let seconds = parseInt(time);
-
-        if (seconds === 0) {
-          clearInterval(shotClockInterval);
-        } else {
-          seconds--;
-        }
-        document.getElementById('shotclock').textContent = `${seconds}`;
-      }, 1000);
-      shotClockRunning = true;
-    }
-  }
-
-  function stopShotClock() {
-    clearInterval(shotClockInterval);
-    shotClockRunning = false;
-  }
-
-  function resetShotClock() {
-    document.getElementById('shotclock').textContent = "24";
-  }
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
