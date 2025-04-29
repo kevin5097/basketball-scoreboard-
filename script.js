@@ -76,3 +76,43 @@ function resetShotClock() {
   shotTimeLeft = 24;
   document.getElementById('shotClock').textContent = shotTimeLeft;
 }
+// 쿼터 리셋
+function resetQuarter() {
+  quarter = 1;
+  document.getElementById('quarter').textContent = `Q${quarter}`;
+}
+
+// 슛 클락 24초 리셋
+function resetShotClock() {
+  shotTimeLeft = 24;
+  document.getElementById('shotClock').textContent = shotTimeLeft;
+}
+
+// 슛 클락 14초 리셋
+function resetShotClock14() {
+  shotTimeLeft = 14;
+  document.getElementById('shotClock').textContent = shotTimeLeft;
+}
+
+// 파울 업데이트 + 5개 이상이면 붉은색
+function updateFouls(team, points) {
+  if (team === 'A') {
+    foulsA += points;
+    if (foulsA >= 5) {
+      document.getElementById('foulsA').textContent = `TEAM FOUL`;
+      document.getElementById('foulsA').style.color = 'red';
+    } else {
+      document.getElementById('foulsA').textContent = `Fouls: ${foulsA}`;
+      document.getElementById('foulsA').style.color = 'lime';
+    }
+  } else {
+    foulsB += points;
+    if (foulsB >= 5) {
+      document.getElementById('foulsB').textContent = `TEAM FOUL`;
+      document.getElementById('foulsB').style.color = 'red';
+    } else {
+      document.getElementById('foulsB').textContent = `Fouls: ${foulsB}`;
+      document.getElementById('foulsB').style.color = 'lime';
+    }
+  }
+}
