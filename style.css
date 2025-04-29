@@ -1,5 +1,68 @@
+body {
+  margin: 0;
+  background-color: #000;
+  font-family: 'Orbitron', sans-serif;
+  color: lime;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.scoreboard {
+  flex: 6;
+  padding: 20px;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.team {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.score {
+  font-size: 5rem;
+  text-shadow: 0 0 10px lime;
+}
+
+.timer {
+  font-size: 4rem;
+  margin: 20px 0;
+  text-shadow: 0 0 10px white;
+}
+
+.quarter, .shot-clock {
+  font-size: 3rem;
+  margin: 10px;
+  text-shadow: 0 0 10px yellow;
+}
+
+.control-panel {
+  flex: 4;
+  background-color: #111;
+  color: white;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.control-panel h3, .control-panel h4 {
+  margin-top: 20px;
+}
+
+.control-panel input {
+  width: 140px;
+  margin: 5px;
+  padding: 5px;
+  font-size: 16px;
+}
+
 .control-panel button {
-  width: 100px; /* 기존보다 절반 수준 */
+  width: 100px;
   height: 40px;
   margin: 5px;
   font-size: 16px;
@@ -13,4 +76,8 @@
 .control-panel button:hover {
   background-color: lime;
   color: black;
+}
+
+.team-name-controls, .score-controls, .foul-controls, .quarter-controls, .timer-controls, .shot-clock-controls {
+  margin-bottom: 20px;
 }
